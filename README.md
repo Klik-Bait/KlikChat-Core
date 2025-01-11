@@ -4,31 +4,30 @@ High level architecture and requirements
 
 Not all cases are covered for now
 
+### Discalimer:
+* Authentication block is not implemented yet
+* Redis is storing messages for 2 days, (TTL 2 days)
 
 # Message Flow Diagram
 
 ```mermaid
 graph TD
-    A[Sender API Consumer] -->|User sender message| B(API Gateway)
-    B -->|Forwards message| C[MesssageCore.ClientReceiver]
+    A[Sender API Consumer] -->|User sends message| B(API Gateway)
+    B -->|Forwards message| C[MessageCore.ClientReceiver]
     C -->|Checks if receiver is active| X{Receiver user is Active?}
     X -->|Yes| D[(RabbitMQ)]
-    X -->|No| R[Redis]
-    R -->|TTL exceeds 5 hours| N[NoSQL Database]
+    X -->|No| N[Redis: Store message]
 
     subgraph Authentication
-        H[User Logs In] -->|Validates Credentials| AS[Authentication Service]
+        H[Receiver User Logs In] -->|Validates Credentials| AS[Authentication Service]
     end
 
-    AS -->|Publishes UserLoggedIn event| MM[MessageCore.MessageManagement]
-    MM -->|Checks Redis for messages| R
-    MM -->|Checks NoSQL for messages| N
-    R -->|Found messages| D
+    AS -->|Notify| C
+    C -->|Checks redis for messages| N
     N -->|Found messages| D
-    D -->|Consumed by| E[MesssageCore.ClientSender]
+    D -->|Consumed by| E[MessageCore.ClientSender]
     E -->|Sends message| F(API Gateway)
     F -->|Delivers message| G[Receiver Consumer: Online]
-
 ```
 
 ## Sender send a massage and receiver is online at the time of sending message 
