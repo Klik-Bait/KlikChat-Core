@@ -3,7 +3,7 @@ using MessagesCore.ClientReceiver.MassTransit;
 using MessagesCore.ClientReceiver.Messaging.Publishers;
 
 var builder = WebApplication.CreateBuilder(args);
-builder.Services.AddScoped<IMessagePublisher, MessagePublisher>();
+builder.Services.AddScoped<IMessageReceiver, MessageReceiver>();
 builder.Services.ConfigureMassTransit(builder.Configuration);
 builder.Services.AddSignalR();
 

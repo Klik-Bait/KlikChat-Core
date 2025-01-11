@@ -3,7 +3,7 @@ using MessageCore.Contracts;
 
 namespace MessagesCore.ClientReceiver.Messaging.Publishers;
 
-public class MessagePublisher(IPublishEndpoint publishEndpoint, ILogger<MessagePublisher> logger): IMessagePublisher
+public class MessageReceiver(IPublishEndpoint publishEndpoint, ILogger<MessageReceiver> logger): IMessageReceiver
 {
     public async Task<bool> PublishChatMessageAsync(ChatMessage chatMessage)
     {
